@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Tableaux Algorithm Visualization </title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script src="examples.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+
+
+    <div id="instructions">
+        <h1>How to use this simple ALC Tableaux Algorithm tool:</h1>
+        <div style="display:flex; justify-content: space-between;">
+            <ol>
+                <li>Pick an example problem. (A set of statements to determine satisfiability for.)</li>
+                <li>It will be translated into negative normal form</li>
+                <li>The tableaux will be initialized (every individual will get an initial set of classes, etc...)</li>
+                <li>The rules of the algorithm will be applied randomly until we find a contradiction or there are no more rules to apply.</li>
+            </ol>
+            <button id="applyRule" onclick="applyRule(window.tableaux, window.nnfStatements)">
+                Step Through Tableaux Algorithm
+            </button>
+
+        </div>
+    </div><br>
+
+    <div id="problems">
+        <div id="unicorn" class="problem" onclick="selectProblem(this)"></div>
+        <div id="three" class="problem" onclick="selectProblem(this)"></div>
+        <div id="primate" class="problem" onclick="selectProblem(this)"></div>
+    </div>
+    <br>
+
+    <div id="problemWorkspace">
+        Information: 
+        <div id="info" class="box"></div>
+        Problem Statements:
+        <div id="statements" class="box"></div>
+        Tableaux:
+        <div id="tableaux" class="box"></div>
+        <br>
+
+    </div>
+    
+    
+    <div id="printArea">
+        $$ \require{cancel} $$
+    </div>
+    
+
+
+
+
+    <script>
+        // global problem state is parameterized by a 
+        // tableaux object,
+        // a set of initial nnfStatements,
+        // (and that's it!)
+        
+        setInterval(function(){
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);            
+        },500);
+
+        function print(statement){
+            let div = document.createElement("div");
+            div.innerHTML += statement;
+            document.querySelector("#printArea").appendChild(div);
+        }
+
+        function printStatement(statement, before="", after=""){
+            print(`${before} ${render$tatement(statement)} ${after}`);
+        }
+
+        function showProblem(problem){
+            for(let x of examples.problems[problem]){
+                print(`$$ ${renderStatement(x)} \\;\\;\\; \\rightarrow \\;\\;\\; ${renderStatement(NNF(x))}$$`);
+            }
+        }
+
+
+        function displayInfo(info){
+            let child = document.createElement("div");
+            child.innerHTML = `$\\bullet$ ${info}`;
+            child.classList.add("box");
+            child.style.boxShadow = "none";
+            let infoDiv = document.querySelector("#info");
+            infoDiv.appendChild(child);
+            infoDiv.scroll({top: 10000, behavior: "smooth"});
+        }
+
+
+        function initProblemTableaux(problem){
+            return initTableaux(examples.problems[problem].map(x => NNF(x)));
+        }
+
+
+        function renderTableaux(){
+            if(window.tableaux == null || window.tableaux == undefined){
+                document.querySelector("#tableaux").innerHTML = "";
+            }
+            else{
+                document.querySelector("#tableaux").innerHTML = window.tableaux.toString();
+            }
+        }
+
+
+
+        function fillProblem(problem){
+            let statements = examples.problems[problem].map(x => `$ ${renderStatement(x)} $`);
+            for(let s of statements){
+                let child = document.createElement("div");
+                child.style.margin = "5px";
+                child.innerHTML = `${s}`;
+                document.querySelector(`#${problem}`).appendChild(child);
+            }
+        }
+
+
+        fillProblem("unicorn");
+        fillProblem("three");
+        fillProblem("primate");
+
+        function selectProblem(problemDiv){
+            Array.from(problemDiv.parentNode.children).forEach(x => x.classList.remove("current"));
+            problemDiv.classList.add("current");
+
+            let problemId = problemDiv.id;
+            window.problemStatements = examples.problems[problemId];
+            window.nnfStatements = [];
+
+            let statements = document.querySelector("#statements");
+            statements.innerHTML = "";
+            for(let s of window.problemStatements){
+                let nnf = NNF(s);
+                window.nnfStatements.push(nnf);
+                let text = `$$ ${renderStatement(s)} \\;\\;\\; \\rightarrow \\;\\;\\; ${renderStatement(nnf)}$$`;
+                let div = document.createElement("div");
+                div.innerHTML = text;
+                statements.appendChild(div);
+            }
+            window.tableaux = initProblemTableaux(problemId);
+            document.querySelector("#info").innerHTML = "";
+            displayInfo("*** Initialized Tableaux ***");
+
+            renderTableaux();
+        }
+
+
+    </script>
+
+</body>
+</html>
