@@ -1,0 +1,92 @@
+body {
+    background-color: black;
+    color:white;
+    transition: 0.2s all;
+    transform:scale(0.96);
+}
+
+#problems {
+    display: flex;
+    border: 1px solid white;
+    padding:10px;
+}
+
+.problem {
+    border: 1px solid white;
+    width:100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding:20px;
+}
+
+.problem.current {
+    box-shadow: inset 0px 0px 30px 0px blue;
+}
+
+.problem:hover {
+    box-shadow: inset 0px 0px 30px 0px green;
+}
+
+
+
+
+
+
+#problemWorkspace {
+    height:100%;
+}
+
+.box{
+    box-shadow: inset 0px 0px 30px 0px blue;
+    padding:20px;
+    margin: 10px;
+    border: 1px solid white;
+    transition: 1s all;
+
+}
+
+#info {
+    text-align: center;
+    height:100px;
+    overflow:auto;
+}
+
+#statements {
+
+}
+
+#tableaux {
+
+}
+
+
+
+
+
+#applyRule {
+    margin-left:20px;
+    padding:10px;
+    box-shadow: 0px 0px 20px 0px blue;
+    border-radius: 20px;
+    border: 1px solid grey;
+    cursor: pointer;
+    transition: 0.1s all;
+    background:black;
+    color: white;
+}
+
+#applyRule:hover {
+    transform: translate(-2px, -2px);
+}
+
+#applyRule:active {
+    transform: translate(1px, 1px);
+}
+
+#applyRule:focus {
+    outline: none;
+}
